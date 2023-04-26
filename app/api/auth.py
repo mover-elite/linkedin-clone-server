@@ -26,8 +26,8 @@ async def sign_up(user: UserInSchema = Body(...)):
 
 @router.post("/login", response_description="Login User", tags=["Auth"])
 async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+    print(form_data.username)
     user = await get_user_by_email(form_data.username)
-
     if not user:
         raise BadRequest("User not found")
     password_valid = verify_password(form_data.password, user["password"])
@@ -40,6 +40,6 @@ async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()])
     return {"access_token": access_token}
 
 
-@router.get("/user/me")
+@router.get("/user/me", tags=["USER"])
 async def get_user(user: UserSchema = Depends(get_current_user)):
     return user
